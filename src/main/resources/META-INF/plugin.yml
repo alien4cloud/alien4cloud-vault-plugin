@@ -3,7 +3,7 @@ name: HTTP HashiCorp Vault Plugin
 version: ${project.version}
 description: >
   Plugin to integrate Alien4Cloud with HashiCorp Vault
-configuration_class: alien4cloud.secret.vault.PluginConfiguration
+configuration_class: org.alien4cloud.secret.vault.PluginConfiguration
 component_descriptors:
   - bean_name: vault
     name: Secret Vault
