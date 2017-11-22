@@ -1,8 +1,10 @@
 package org.alien4cloud.secret.vault.configuration;
 
+import javax.validation.constraints.NotNull;
+
 import alien4cloud.ui.form.annotation.FormLabel;
+import alien4cloud.ui.form.annotation.FormPassword;
 import alien4cloud.ui.form.annotation.FormProperties;
-import alien4cloud.ui.form.annotation.FormPropertyDefinition;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +13,8 @@ import lombok.Setter;
 @FormProperties({ "token" })
 public class TokenConfiguration {
 
-    @FormPropertyDefinition(type = "string", description = "ORCHESTRATORS.LOCATIONS.SECRETS.TOKEN", isPassword = true, isRequired = true)
+    @NotNull
+    @FormPassword
     @FormLabel("ORCHESTRATORS.LOCATIONS.SECRETS.TOKEN")
     private String token;
 }
