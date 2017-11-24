@@ -11,12 +11,16 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@FormProperties({ "url", "authenticationMethod" })
+@FormProperties({ "url", "authenticationMethod", "certificate" })
 public class VaultConfiguration {
 
     @FormPropertyDefinition(type = ToscaTypes.STRING, description = "ORCHESTRATORS.LOCATIONS.SECRETS.VAULT_URL", isRequired = true)
     @FormLabel("ORCHESTRATORS.LOCATIONS.SECRETS.VAULT_URL")
     private String url;
+
+    @FormPropertyDefinition(type = ToscaTypes.STRING, description = "ORCHESTRATORS.LOCATIONS.SECRETS.VAULT_CERTIFICATE")
+    @FormLabel("ORCHESTRATORS.LOCATIONS.SECRETS.VAULT_CERTIFICATE")
+    private String certificate;
 
     @FormPropertyDefinition(type = ToscaTypes.STRING, description = "ORCHESTRATORS.LOCATIONS.SECRETS.AUTHENTICATION_METHOD", isRequired = true, constraints = @FormPropertyConstraint(validValues = {
             "token", "ldap" }))
