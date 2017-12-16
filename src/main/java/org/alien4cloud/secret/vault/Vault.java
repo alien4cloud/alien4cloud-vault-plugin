@@ -1,17 +1,15 @@
 package org.alien4cloud.secret.vault;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
+import com.bettercloud.vault.SslConfig;
 import org.alien4cloud.secret.ISecretProvider;
-import org.alien4cloud.secret.exception.AuthenticationException;
+import org.alien4cloud.secret.exception.SecretProviderAuthenticationException;
 import org.alien4cloud.secret.exception.NotSupportedAuthenticationMethod;
 import org.alien4cloud.secret.vault.configuration.LDAPConfiguration;
 import org.alien4cloud.secret.vault.configuration.TokenConfiguration;
 import org.alien4cloud.secret.vault.configuration.VaultConfiguration;
 import org.alien4cloud.secret.vault.constant.AuthenticationMethods;
+import org.apache.commons.lang3.StringUtils;
 
-import com.bettercloud.vault.SslConfig;
 import com.bettercloud.vault.VaultConfig;
 import com.bettercloud.vault.response.AuthResponse;
 
@@ -36,20 +34,22 @@ public class Vault implements ISecretProvider<VaultConfiguration> {
         }
     }
 
+    private String sanitizeURL(String url) {
+        if (url.endsWith("/")) {
+            return url.substring(0, url.length() - 1);
+        } else {
+            return url;
+        }
+    }
+
     @Override
     public SecretAuthResponse auth(VaultConfiguration vaultConfiguration, Object credentials) {
         TokenConfiguration tokenConfiguration = new TokenConfiguration();
         final com.bettercloud.vault.Vault vault;
         try {
-            final VaultConfig vaultConfig = new VaultConfig().address(vaultConfiguration.getUrl());
-            if (vaultConfiguration.getCertificate() != null) {
-                // check the tls verify
-                final SslConfig sslConfig = new SslConfig().clientKeyPemUTF8(new String(Files.readAllBytes(Paths.get(vaultConfiguration.getCertificate()))))
-                        .verify(true).build();
-                vaultConfig.sslConfig(sslConfig);
-            } else {
-                final SslConfig sslConfig = new SslConfig().verify(false).build();
-                vaultConfig.sslConfig(sslConfig);
+            final VaultConfig vaultConfig = new VaultConfig().address(sanitizeURL(vaultConfiguration.getUrl()));
+            if (StringUtils.isNotBlank(vaultConfiguration.getCertificate())) {
+                vaultConfig.sslConfig(new SslConfig().pemUTF8(vaultConfiguration.getCertificate()).build());
             }
             switch (vaultConfiguration.getAuthenticationMethod()) {
             case AuthenticationMethods.LDAP:
@@ -70,7 +70,7 @@ public class Vault implements ISecretProvider<VaultConfiguration> {
                 throw new NotSupportedAuthenticationMethod("Authentication method [" + vaultConfiguration.getAuthenticationMethod() + "] is not supported");
             }
         } catch (Exception e) {
-            throw new AuthenticationException("Authentication fails", e);
+            throw new SecretProviderAuthenticationException("Authentication fails", e);
         }
         VaultConfiguration newVaultConfiguration = new VaultConfiguration();
         newVaultConfiguration.setAuthenticationMethod(AuthenticationMethods.TOKEN);
