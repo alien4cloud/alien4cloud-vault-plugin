@@ -3,10 +3,10 @@
     <parent>
         <groupId>alien4cloud</groupId>
         <artifactId>alien4cloud-parent</artifactId>
-        <version>3.2.0-SNAPSHOT</version>
+        <version>3.2.0</version>
     </parent>
     <artifactId>alien4cloud-vault-plugin</artifactId>
-    <version>3.2.0-SNAPSHOT</version>
+    <version>3.2.0</version>
     <name>Alien Vault Plugin</name>
     <description>Alien plugin to manage secrets by using HashiCorp Vault.</description>
     <dependencies>
